@@ -40,7 +40,7 @@ apiRouter.put('/minions/:minionId', (req, res, next) => {
     const minionToUpdate = req.body;
     const minion = db.updateInstanceInDatabase('minions', minionToUpdate);
     if(minion) {
-        res.status(204).send(minion);
+        res.status(201).send(minion);
     } else {
         res.status(404).send();
     }
@@ -93,7 +93,7 @@ apiRouter.put('/ideas/:ideaId', (req, res, next) => {
     const ideaToUpdate = req.body;
     const idea = db.updateInstanceInDatabase('ideas', ideaToUpdate);
     if(idea) {
-        res.status(204).send(idea);
+        res.status(201).send(idea);
     } else {
         res.status(404).send();
     }
