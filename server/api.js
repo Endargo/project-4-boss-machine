@@ -1,6 +1,7 @@
 const express = require('express');
 const apiRouter = express.Router();
 const db = require('./db');
+const checkMillionDollarIdea = require('./checkMillionDollarIdea');
 
 //All routes should live here, structure is free-form
 
@@ -66,7 +67,7 @@ apiRouter.get('/ideas/', (req, res, next) => {
 });
 
 // POST /api/ideas to create a new idea and save it to the database.
-apiRouter.post('/ideas', (req, res, next) => {
+apiRouter.post('/ideas', checkMillionDollarIdea, (req, res, next) => {
     const newIdea = req.body;
     const idea = db.addToDatabase('ideas', newIdea)
     if(idea) {
