@@ -114,17 +114,25 @@ apiRouter.delete('/ideas/:ideaId', (req, res, next) => {
 
 // GET /api/meetings to get an array of all meetings.
 apiRouter.get('/meetings', (req, res, next) => {
-
+    const meetings = db.getAllFromDatabase('meetings');
+    res.status(200).send(meetings);
 });
 
 // POST /api/meetings to create a new meeting and save it to the database.
 apiRouter.post('/meetings', (req, res, next) => {
-
+    const newMeeting = db.createMeeting();
+    const meeting = db.addToDatabase('meetings', newMeeting)
+    if(meeting) {
+        res.status(201).send(meeting);
+    } else {
+        res.status(404).send();
+    }
 });
 
 // DELETE /api/meetings to delete all meetings from the database.
 apiRouter.delete('/meetings', (req, res, next) => {
-
+    db.deleteAllFromDatabase('meetings');
+    res.status(204).send();
 });
 
 
