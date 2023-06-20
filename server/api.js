@@ -66,8 +66,8 @@ apiRouter.delete('/minions/:minionId', (req, res, next) => {
 apiRouter.get('/minions/:minionId/work', (req, res, next) => {
     const minionId = req.params.minionId;
     const minion = db.getFromDatabaseById('minions' , minionId);
-    const allWork = db.getAllFromDatabase('work').filter(work => work.minionId === minionId);
     if(minion) {
+        const allWork = db.getAllFromDatabase('work').filter(work => work.minionId === minionId);
         res.status(200).send(allWork);
     } else {
         res.status(404).send();
@@ -76,11 +76,15 @@ apiRouter.get('/minions/:minionId/work', (req, res, next) => {
 // POST /api/minions/:minionId/work to create a new work object and save it to the database.
 apiRouter.post('/minions/:minionId/work', (req, res, next) => {
     const minionId = req.params.minionId;
-    const newWork = req.body;
     const minion = db.getFromDatabaseById('minions' , minionId);
-    const work = db.addToDatabase('work', newWork);
-    if(minion && work) {
-        res.status(201).send(work);
+    if(minion) {
+        const newWork = req.body;
+        const work = db.addToDatabase('work', newWork);
+        if(work) {
+            res.status(201).send(work);
+        } else {
+            res.status(404).send();
+        }
     } else {
         res.status(404).send();
     }
