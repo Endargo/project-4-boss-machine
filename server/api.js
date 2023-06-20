@@ -6,6 +6,7 @@ const checkMillionDollarIdea = require('./checkMillionDollarIdea');
 
 //All routes
 
+
 // /api/minions
 
 // GET /api/minions to get an array of all minions.
@@ -28,7 +29,7 @@ apiRouter.post('/minions', (req, res, next) => {
 // GET /api/minions/:minionId to get a single minion by id.
 apiRouter.get('/minions/:minionId', (req, res, next) => {
     const minionId = req.params.minionId;
-    const minion = db.getFromDatabaseById('minions' , minionId);
+    const minion = db.getFromDatabaseById('minions', minionId);
     if(minion) {
         res.status(200).send(minion);
     } else {
@@ -58,13 +59,14 @@ apiRouter.delete('/minions/:minionId', (req, res, next) => {
     }
 });
 
+
 // /api/minions/:minionId/work
 
 // GET /api/minions/:minionId/work to get an array of all work for the specified minon.
-apiRouter.get('/api/minions/:minionId/work', (req, res, next) => {
+apiRouter.get('/minions/:minionId/work', (req, res, next) => {
     const minionId = req.params.minionId;
     const minion = db.getFromDatabaseById('minions' , minionId);
-    const allWork = db.getAllFromDatabase('work');
+    const allWork = db.getAllFromDatabase('work').filter(work => work.minionId === minionId);
     if(minion) {
         res.status(200).send(allWork);
     } else {
@@ -72,10 +74,52 @@ apiRouter.get('/api/minions/:minionId/work', (req, res, next) => {
     }
 });
 // POST /api/minions/:minionId/work to create a new work object and save it to the database.
-
+apiRouter.post('/minions/:minionId/work', (req, res, next) => {
+    const minionId = req.params.minionId;
+    const newWork = req.body;
+    const minion = db.getFromDatabaseById('minions' , minionId);
+    const work = db.addToDatabase('work', newWork);
+    if(minion && work) {
+        res.status(201).send(work);
+    } else {
+        res.status(404).send();
+    }
+});
 // PUT /api/minions/:minionId/work/:workId to update a single work by id.
-
+apiRouter.put('/minions/:minionId/work/:workId', (req, res, next) => {
+    const minionId = req.params.minionId;
+    const minion = db.getFromDatabaseById('minions', minionId);
+    if(minion) {
+        const workId = req.params.workId;
+        const work = db.getFromDatabaseById('work', workId);
+        if(work) {
+            const workToUpdate = req.body;
+            const work = db.updateInstanceInDatabase('work', workToUpdate);
+            res.status(201).send(work);
+        } else {
+            res.status(404).send();
+        } 
+    } else {
+        res.status(400).send();
+    }
+    
+});
 // DELETE /api/minions/:minionId/work/:workId to delete a single work by id.
+apiRouter.delete('/minions/:minionId/work/:workId', (req, res, next) => {
+    const minionId = req.params.minionId;
+    const minion = db.getFromDatabaseById('minions', minionId);
+    if(minion) {
+        const workId = req.params.workId;
+        const result = db.deleteFromDatabasebyId('work', workId);
+        if(result) {
+            res.status(204).send(workId);
+        } else {
+            res.status(404).send();
+        }
+    } else {
+        res.status(404).send();
+    }
+});
 
 
 // /api/ideas
@@ -100,7 +144,7 @@ apiRouter.post('/ideas', checkMillionDollarIdea, (req, res, next) => {
 // GET /api/ideas/:ideaId to get a single idea by id.
 apiRouter.get('/ideas/:ideaId', (req, res, next) => {
     const ideaId = req.params.ideaId;
-    const idea = db.getFromDatabaseById('ideas' , ideaId);
+    const idea = db.getFromDatabaseById('ideas', ideaId);
     if(idea) {
         res.status(200).send(idea);
     } else {

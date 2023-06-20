@@ -1,3 +1,4 @@
+//Middleware to check idea's value
 const checkMillionDollarIdea = (req, res, next) => {
     const idea = req.body;
     let cost;
@@ -13,5 +14,5 @@ const checkMillionDollarIdea = (req, res, next) => {
     }
 };
 
-// Leave this exports assignment so that the function can be used elsewhere
+//Export to use in /ideas routes
 module.exports = checkMillionDollarIdea;
