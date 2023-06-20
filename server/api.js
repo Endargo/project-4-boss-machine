@@ -1,9 +1,10 @@
 const express = require('express');
 const apiRouter = express.Router();
+
 const db = require('./db');
 const checkMillionDollarIdea = require('./checkMillionDollarIdea');
 
-//All routes should live here, structure is free-form
+//All routes
 
 // /api/minions
 
@@ -56,6 +57,25 @@ apiRouter.delete('/minions/:minionId', (req, res, next) => {
         res.status(404).send();
     }
 });
+
+// /api/minions/:minionId/work
+
+// GET /api/minions/:minionId/work to get an array of all work for the specified minon.
+apiRouter.get('/api/minions/:minionId/work', (req, res, next) => {
+    const minionId = req.params.minionId;
+    const minion = db.getFromDatabaseById('minions' , minionId);
+    const allWork = db.getAllFromDatabase('work');
+    if(minion) {
+        res.status(200).send(allWork);
+    } else {
+        res.status(404).send();
+    }
+});
+// POST /api/minions/:minionId/work to create a new work object and save it to the database.
+
+// PUT /api/minions/:minionId/work/:workId to update a single work by id.
+
+// DELETE /api/minions/:minionId/work/:workId to delete a single work by id.
 
 
 // /api/ideas
