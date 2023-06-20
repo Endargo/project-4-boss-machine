@@ -98,13 +98,18 @@ apiRouter.put('/minions/:minionId/work/:workId', (req, res, next) => {
         const work = db.getFromDatabaseById('work', workId);
         if(work) {
             const workToUpdate = req.body;
-            const work = db.updateInstanceInDatabase('work', workToUpdate);
-            res.status(201).send(work);
+            const minionToCheck = db.getFromDatabaseById('minions', workToUpdate.minionId);
+            if(minionToCheck === minion) {
+                const work = db.updateInstanceInDatabase('work', workToUpdate);
+                res.status(201).send(work);
+            } else {
+                res.status(400).send();
+            }
         } else {
             res.status(404).send();
         } 
     } else {
-        res.status(400).send();
+        res.status(404).send();
     }
     
 });
